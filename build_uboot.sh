@@ -20,9 +20,9 @@ function build() {
         # check if it's a git patch or not
         if grep -q -- "--git" "$patch_file"; then
             # ignore a or b path prefix in the patch file
-            patch -d $UBOOT_DIR -p1 < "$patch_file"
+            patch -N -d $UBOOT_DIR -p1 < "$patch_file"
         else
-            patch -d $UBOOT_DIR < "$patch_file"
+            patch -N -d $UBOOT_DIR < "$patch_file"
         fi
     done
 
