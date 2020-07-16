@@ -32,6 +32,19 @@ function _leave() {
     popd
 }
 
+# try to call the 'build' function
+function _build() {
+    _enter
+    declare -f -F "build" > /dev/null && build
+    _leave
+}
+# try to call the 'clean' function
+function _clean() {
+    _enter
+    declare -f -F "clean" > /dev/null && clean
+    _leave
+}
+
 
 # override of the pusd and popd functions to suppress output
 function pushd() {
@@ -42,6 +55,21 @@ function popd() {
 }
 
 
+# this is the entering point for each script
+function entry_point() {
+    case "$1" in
+        "build")
+            _build
+            ;;
+        "clean")
+            _clean
+            ;;
+        *)
+            _build
+            ;;
+    esac
+}
+
 # override of the exit function
 function exit() {
     # leave the environment before exiting
@@ -49,18 +77,3 @@ function exit() {
 
     command exit "$@"
 }
-
-
-
-################
-# Entering point
-################
-
-case "$1" in
-    "start")
-        _enter
-        ;;
-    "stop")
-        _leave
-        ;;
-esac
