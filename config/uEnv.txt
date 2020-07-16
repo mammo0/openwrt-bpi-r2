@@ -1,0 +1,36 @@
+# static variables
+scriptaddr=0x83000000
+device=mmc
+bootenv=uEnv.txt
+
+
+checkenv=test -e ${device} ${partition} ${bootenv}
+importenv=env import -t ${scriptaddr} ${filesize}
+loadbootenv=if fatload ${device} ${partition} ${scriptaddr} ${bootenv};then run importenv;else echo "fatload (${bootenv}) failed";fi
+
+
+# Here we assume that SD card id mmcblk1 and eMMC is mmcblk0 in linux. Swap them if your DTS define them in reverse order.
+usesd=setenv partition 1:1; setenv rootdev /dev/mmcblk1p2; setenv bootdev SD; setenv swaproot 'run useemmc';
+useemmc=setenv partition 0:1; setenv rootdev /dev/mmcblk0p2; setenv bootdev eMMC; setenv swaproot 'run usesd';
+
+checkbootedfrom=if itest.l *81dffff0 == 434d4d65 ; then setenv bootedfrom eMMC; else setenv bootedfrom SD; fi;
+checkroot=fatinfo ${device} ${partition}
+
+
+# Output
+reportbootedfrom=echo "Preloader/U-Boot loaded from ${bootedfrom}."; run validroot || echo "Both SD and eMMC pt#1 are not FAT, falling back to U-Boot shell."
+reportvalidroot=run validroot || echo "Both SD and eMMC pt#1 are not FAT, falling back to U-Boot shell."
+reportrootswapwarn=if test "${bootedfrom}" != "${bootdev}" ; then echo "Warning: Partition 1 on ${bootedfrom} is not FAT, failing back to ${bootdev}"; fi; true;
+reportbootdev=echo "Booting from ${bootdev}."
+reportboot=run reportbootedfrom reportvalidroot reportrootswapwarn reportbootdev
+
+
+validateroot=setenv validroot false; run checkroot || run swaproot; run checkroot && setenv validroot true || run swaproot;
+detectroot=run useemmc; run checkbootedfrom; if test "${bootedfrom}" == "SD"; then run usesd; fi; run validateroot;
+reloadenv=run detectroot; if run validroot; then if run checkenv; then run loadbootenv; run detectroot; else echo uEnv.txt file not found on ${bootdev}; fi; fi;
+reloadmenu=run reloadenv; run reportboot; if run validroot; then if run checkenv; then run loadbootenv; else echo uEnv.txt file not found on ${bootdev}; fi; bootmenu; fi;
+
+
+#automatic reload from sd/emmc
+bootdelay=0
+bootcmd=setenv bootdelay 3; run reloadmenu;

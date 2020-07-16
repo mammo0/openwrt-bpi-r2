@@ -7,6 +7,12 @@ TMP_DIR=$(mktemp -d)
 
 BASE_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
+CONFIG_DIR=$BASE_DIR/config
+PATCH_DIR=$BASE_DIR/patches
+
+UBOOT_DIR=$BASE_DIR/include/u-boot
+UBOOT_BIN=$UBOOT_DIR/u-boot.bin
+
 
 ###########
 # Functions
