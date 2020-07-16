@@ -1,2 +1,5 @@
 # the built images
 /*.img
+
+# the openwrt source
+/include/openwrt
