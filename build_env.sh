@@ -47,6 +47,23 @@ function _clean() {
 }
 
 
+function apply_patches() {
+    for patch_file in "$1"/*.patch; do
+        [ -f "$patch_file" ] || break
+
+        echo "Applying patch $patch_file"
+
+        # check if it's a git patch or not
+        if grep -q -- "--git" "$patch_file"; then
+            # ignore a or b path prefix in the patch file
+            patch -N -d "$2" -p1 < "$patch_file"
+        else
+            patch -N -d "$2" < "$patch_file"
+        fi
+    done
+}
+
+
 # override of the pusd and popd functions to suppress output
 function pushd() {
     command pushd "$@" > /dev/null
