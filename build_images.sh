@@ -17,6 +17,7 @@ SD_HEAD_2_FILE="$BIN_DIR/$SD_HEAD_2"
 
 
 MMC_IMAGE_FILE="$BASE_DIR/BPI-R2_MMC.img"
+MMC_BOOT0_FILE="$BASE_DIR/BPI-R2_MMC_boot0.img"
 # precompiled binaries for MMC boot
 MMC_PRELOADER="BPI-R2-EMMC-boot0-DDR1600-20191024-0k.img"
 MMC_PRELOADER_FILE="$BIN_DIR/$MMC_PRELOADER"
@@ -79,7 +80,7 @@ function build() {
 	# this binary is ready to use
 	# it must be flashed to the boot0 partition of the MMC
 	# dd if=BPI-R2_MMC_boot0.img of=/dev/mmcblk1boot0
-	cp "$MMC_PRELOADER_FILE" BPI-R2_MMC_boot0.img
+	cp "$MMC_PRELOADER_FILE" "$MMC_BOOT0_FILE"
 
 	# creating the MMC image
 	cp "$BASE_IMAGE_FILE" "$MMC_IMAGE_FILE"
@@ -87,13 +88,14 @@ function build() {
 }
 
 function clean() {
-	rm $SD_IMAGE_FILE
-	rm $SD_PRELOADER_FILE
-	rm $SD_HEAD_1_FILE
-	rm $SD_HEAD_2_FILE
+	rm "$SD_IMAGE_FILE"
+	rm "$SD_PRELOADER_FILE"
+	rm "$SD_HEAD_1_FILE"
+	rm "$SD_HEAD_2_FILE"
 
-	rm $MMC_IMAGE_FILE
-	rm $MMC_PRELOADER_FILE
+	rm "$MMC_IMAGE_FILE"
+	rm "$MMC_BOOT0_FILE"
+	rm "$MMC_PRELOADER_FILE"
 }
 
 
