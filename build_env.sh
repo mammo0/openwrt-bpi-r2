@@ -14,6 +14,9 @@ PATCH_DIR="$BASE_DIR/patches"
 UBOOT_DIR="$BASE_DIR/include/u-boot"
 UBOOT_BIN="$UBOOT_DIR/u-boot.bin"
 
+OPENWRT_VER="19.07.3"
+OPENWRT_DIR="$BASE_DIR/include/openwrt"
+
 
 ###########
 # Functions
