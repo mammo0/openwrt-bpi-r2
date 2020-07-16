@@ -5,7 +5,7 @@
 ###########
 TMP_DIR=$(mktemp -d)
 
-UBOOT_BIN=bin/u-boot.bin
+BASE_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 
 ###########
@@ -14,9 +14,7 @@ UBOOT_BIN=bin/u-boot.bin
 
 # this function should be called when entering the environment
 function _enter() {
-    working_dir=$(dirname $0)
-
-    pushd $working_dir
+    pushd $BASE_DIR
 }
 
 # this function should be called when leaving the environment
