@@ -3,14 +3,30 @@
 . build_env.sh
 
 
+BASE_IMAGE_FILE="$TMP_DIR/base_img.img"
+
+
+SD_IMAGE_FILE="$BASE_DIR/BPI-R2_SD.img"
+# special SD card images (precompiled)
+SD_PRELOADER="BPI-R2-preloader-DDR1600-20191024-2k.img"
+SD_PRELOADER_FILE="$BIN_DIR/$SD_PRELOADER"
+SD_HEAD_1="BPI-R2-HEAD440-0k.img"
+SD_HEAD_1_FILE="$BIN_DIR/$SD_HEAD_1"
+SD_HEAD_2="BPI-R2-HEAD1-512b.img"
+SD_HEAD_2_FILE="$BIN_DIR/$SD_HEAD_2"
+
+
+MMC_IMAGE_FILE="$BASE_DIR/BPI-R2_MMC.img"
+# precompiled binaries for MMC boot
+MMC_PRELOADER="BPI-R2-EMMC-boot0-DDR1600-20191024-0k.img"
+MMC_PRELOADER_FILE="$BIN_DIR/$MMC_PRELOADER"
+
+
 function build() {
 	############
 	# main image
 	############
 	echo "Creating main image file..."
-
-	BASE_IMAGE_FILE=$TMP_DIR/base_img.img
-
 
 	# create the image
 	dd if=/dev/zero of="$BASE_IMAGE_FILE" bs=1k count=512k
@@ -33,14 +49,7 @@ function build() {
 	#########
 	echo "Building SD card image..."
 
-	SD_IMAGE_FILE=BPI-R2_SD.img
-
-	# special SD card images (precompiled)
-	SD_PRELOADER=BPI-R2-preloader-DDR1600-20191024-2k.img
-	SD_HEAD_1=BPI-R2-HEAD440-0k.img
-	SD_HEAD_2=BPI-R2-HEAD1-512b.img
-
-	# download them
+	# download precompiled binaries for SD card
 	pushd bin
 	for image in $SD_PRELOADER $SD_HEAD_1 $SD_HEAD_2; do
 		curl -LJO https://github.com/BPI-SINOVOIP/BPI-files/raw/master/SD/100MB/${image}.gz
@@ -50,10 +59,10 @@ function build() {
 
 	# creating the SD image
 	cp "$BASE_IMAGE_FILE" "$SD_IMAGE_FILE"
-	dd if=bin/$SD_HEAD_1 of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=0
-	dd if=bin/$SD_HEAD_2 of="$SD_IMAGE_FILE" conv=notrunc bs=512 seek=1
-	dd if=bin/$SD_PRELOADER of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=2
-	dd if=$UBOOT_BIN of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=320
+	dd if=bin/"$SD_HEAD_1_FILE" of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=0
+	dd if=bin/"$SD_HEAD_2_FILE" of="$SD_IMAGE_FILE" conv=notrunc bs=512 seek=1
+	dd if=bin/"$SD_PRELOADER_FILE" of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=2
+	dd if="$UBOOT_BIN" of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=320
 
 
 	#####
@@ -61,11 +70,7 @@ function build() {
 	#####
 	echo "Building MMC image..."
 
-	MMC_IMAGE_FILE=BPI-R2_MMC.img
-
-	# precompiled binaries for MMC boot
-	MMC_PRELOADER=BPI-R2-EMMC-boot0-DDR1600-20191024-0k.img
-
+	# download precompiled binary for MMC
 	pushd bin
 	curl -LJO https://github.com/BPI-SINOVOIP/BPI-files/raw/master/SD/100MB/${MMC_PRELOADER}.gz
 	gunzip -f ${MMC_PRELOADER}.gz
@@ -74,11 +79,21 @@ function build() {
 	# this binary is ready to use
 	# it must be flashed to the boot0 partition of the MMC
 	# dd if=BPI-R2_MMC_boot0.img of=/dev/mmcblk1boot0
-	cp bin/$MMC_PRELOADER BPI-R2_MMC_boot0.img
+	cp "$MMC_PRELOADER_FILE" BPI-R2_MMC_boot0.img
 
 	# creating the MMC image
 	cp "$BASE_IMAGE_FILE" "$MMC_IMAGE_FILE"
-	dd if=$UBOOT_BIN of="$MMC_IMAGE_FILE" conv=notrunc bs=1k seek=320
+	dd if="$UBOOT_BIN" of="$MMC_IMAGE_FILE" conv=notrunc bs=1k seek=320
+}
+
+function clean() {
+	rm $SD_IMAGE_FILE
+	rm $SD_PRELOADER_FILE
+	rm $SD_HEAD_1_FILE
+	rm $SD_HEAD_2_FILE
+
+	rm $MMC_IMAGE_FILE
+	rm $MMC_PRELOADER_FILE
 }
 
 

@@ -33,4 +33,15 @@ function build() {
 }
 
 
+function clean() {
+    pushd $UBOOT_DIR
+    # first clean all build artifacts
+    git clean -xdf
+
+    # then reset the u-boot submodule
+    git reset --hard
+    popd
+}
+
+
 entry_point "$@"

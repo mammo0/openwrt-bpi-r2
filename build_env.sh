@@ -7,6 +7,7 @@ TMP_DIR=$(mktemp -d)
 
 BASE_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
+BIN_DIR=$BASE_DIR/bin
 CONFIG_DIR=$BASE_DIR/config
 PATCH_DIR=$BASE_DIR/patches
 
