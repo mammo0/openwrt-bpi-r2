@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+. build_env.sh start
+
+
+############
+# main image
+############
+echo "Creating main image file..."
+
+BASE_IMAGE_FILE=$TMP_DIR/base_img.img
+
+
+# create the image
+dd if=/dev/zero of="$BASE_IMAGE_FILE" bs=1k count=512k
+
+# load the partition tale
+sfdisk "$BASE_IMAGE_FILE" < config/base_img.parttable
+
+# format the partitions
+LOOP_DEV=$(sudo losetup -Pf --show "$BASE_IMAGE_FILE")
+sudo mkfs.vfat ${LOOP_DEV}p1
+sudo mkfs.ext4 ${LOOP_DEV}p2
+sudo losetup -d $LOOP_DEV
+
+
+# TODO: copy filesystem
+
+
+#########
+# SD card
+#########
+echo "Building SD card image..."
+
+SD_IMAGE_FILE=BPI-R2_SD.img
+
+# special SD card images (precompiled)
+SD_PRELOADER=BPI-R2-preloader-DDR1600-20191024-2k.img
+SD_HEAD_1=BPI-R2-HEAD440-0k.img
+SD_HEAD_2=BPI-R2-HEAD1-512b.img
+
+# download them
+pushd bin
+for image in $SD_PRELOADER $SD_HEAD_1 $SD_HEAD_2; do
+	curl -LJO https://github.com/BPI-SINOVOIP/BPI-files/raw/master/SD/100MB/${image}.gz
+	gunzip -f ${image}.gz
+done
+popd
+
+# creating the SD image
+cp "$BASE_IMAGE_FILE" "$SD_IMAGE_FILE"
+dd if=bin/$SD_HEAD_1 of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=0
+dd if=bin/$SD_HEAD_2 of="$SD_IMAGE_FILE" conv=notrunc bs=512 seek=1
+dd if=bin/$SD_PRELOADER of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=2
+dd if=$UBOOT_BIN of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=320
+
+
+#####
+# MMC
+#####
+echo "Building MMC image..."
+
+MMC_IMAGE_FILE=BPI-R2_MMC.img
+
+# precompiled binaries for MMC boot
+MMC_PRELOADER=BPI-R2-EMMC-boot0-DDR1600-20191024-0k.img
+
+pushd bin
+curl -LJO https://github.com/BPI-SINOVOIP/BPI-files/raw/master/SD/100MB/${MMC_PRELOADER}.gz
+gunzip -f ${MMC_PRELOADER}.gz
+popd
+
+# this binary is ready to use
+# it must be flashed to the boot0 partition of the MMC
+# dd if=BPI-R2_MMC_boot0.img of=/dev/mmcblk1boot0
+cp bin/$MMC_PRELOADER BPI-R2_MMC_boot0.img
+
+# creating the MMC image
+cp "$BASE_IMAGE_FILE" "$MMC_IMAGE_FILE"
+dd if=$UBOOT_BIN of="$MMC_IMAGE_FILE" conv=notrunc bs=1k seek=320
+
+
+. build_env.sh stop
