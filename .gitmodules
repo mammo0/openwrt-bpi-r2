@@ -1,0 +1,3 @@
+[submodule "include/u-boot"]
+	path = include/u-boot
+	url = https://github.com/frank-w/u-boot.git
