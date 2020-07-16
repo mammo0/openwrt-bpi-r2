@@ -9,7 +9,7 @@ function build() {
     echo "Building u-boot..."
 
     # add a custom uEnv.txt
-    cp "$CONFIG_DIR/uEnv.txt" "$UBOOT_DIR/"
+    cp "$CONFIG_DIR/uEnv_default.txt" "$UBOOT_DIR/"
 
     # apply patches
     apply_patches "$PATCH_DIR/u-boot" "$UBOOT_DIR"
