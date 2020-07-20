@@ -5,12 +5,8 @@
 
 function build() {
     if [[ ! -d "$OPENWRT_DIR" ]]; then
-        # first get the source
-        git clone --depth 1 https://github.com/openwrt/openwrt.git "$OPENWRT_DIR"
-        pushd "$OPENWRT_DIR"
-        git fetch --tags
-        git checkout "v$OPENWRT_VER"
-        popd
+        # get the source
+        git clone -b "v$OPENWRT_VER" --depth 1 https://github.com/openwrt/openwrt.git "$OPENWRT_DIR"
     fi
 
     pushd "$OPENWRT_DIR"
