@@ -4,6 +4,11 @@
 
 
 function build() {
+    if [[ ! -d "$UBOOT_DIR" ]]; then
+        # get the source
+        git clone -b "v$UBOOT_VER" --depth 1 https://github.com/frank-w/u-boot.git "$UBOOT_DIR"
+    fi
+
     # go to the u-boot directory
     pushd "$UBOOT_DIR"
     echo "Building u-boot..."
@@ -22,13 +27,7 @@ function build() {
 
 
 function clean() {
-    pushd "$UBOOT_DIR"
-    # first clean all build artifacts
-    git clean -xdf
-
-    # then reset the u-boot submodule
-    git reset --hard
-    popd
+    rm -rf "$UBOOT_DIR"
 }
 
 

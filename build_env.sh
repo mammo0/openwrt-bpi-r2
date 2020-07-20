@@ -11,6 +11,7 @@ BIN_DIR="$BASE_DIR/bin"
 CONFIG_DIR="$BASE_DIR/config"
 PATCH_DIR="$BASE_DIR/patches"
 
+UBOOT_VER="2019-01-bpi-r2"
 UBOOT_DIR="$BASE_DIR/include/u-boot"
 UBOOT_BIN="$UBOOT_DIR/u-boot.bin"
 

@@ -1,5 +1,6 @@
 # the built images
 /*.img
 
-# the openwrt source
+# the needed source code
 /include/openwrt
+/include/u-boot
