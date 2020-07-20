@@ -16,11 +16,11 @@ SD_HEAD_2="BPI-R2-HEAD1-512b.img"
 SD_HEAD_2_FILE="$BIN_DIR/$SD_HEAD_2"
 
 
-MMC_IMAGE_FILE="$BASE_DIR/BPI-R2_MMC.img"
-MMC_BOOT0_FILE="$BASE_DIR/BPI-R2_MMC_boot0.img"
+EMMC_IMAGE_FILE="$BASE_DIR/BPI-R2_EMMC.img"
+EMMC_BOOT0_FILE="$BASE_DIR/BPI-R2_EMMC_boot0.img"
 # precompiled binaries for MMC boot
-MMC_PRELOADER="BPI-R2-EMMC-boot0-DDR1600-20191024-0k.img"
-MMC_PRELOADER_FILE="$BIN_DIR/$MMC_PRELOADER"
+EMMC_PRELOADER="BPI-R2-EMMC-boot0-DDR1600-20191024-0k.img"
+EMMC_PRELOADER_FILE="$BIN_DIR/$EMMC_PRELOADER"
 
 
 function build() {
@@ -73,18 +73,18 @@ function build() {
 
 	# download precompiled binary for MMC
 	pushd bin
-	curl -LJO https://github.com/BPI-SINOVOIP/BPI-files/raw/master/SD/100MB/${MMC_PRELOADER}.gz
-	gunzip -f ${MMC_PRELOADER}.gz
+	curl -LJO https://github.com/BPI-SINOVOIP/BPI-files/raw/master/SD/100MB/${EMMC_PRELOADER}.gz
+	gunzip -f ${EMMC_PRELOADER}.gz
 	popd
 
 	# this binary is ready to use
 	# it must be flashed to the boot0 partition of the MMC
 	# dd if=BPI-R2_MMC_boot0.img of=/dev/mmcblk1boot0
-	cp "$MMC_PRELOADER_FILE" "$MMC_BOOT0_FILE"
+	cp "$EMMC_PRELOADER_FILE" "$EMMC_BOOT0_FILE"
 
 	# creating the MMC image
-	cp "$BASE_IMAGE_FILE" "$MMC_IMAGE_FILE"
-	dd if="$UBOOT_BIN" of="$MMC_IMAGE_FILE" conv=notrunc bs=1k seek=320
+	cp "$BASE_IMAGE_FILE" "$EMMC_IMAGE_FILE"
+	dd if="$UBOOT_BIN" of="$EMMC_IMAGE_FILE" conv=notrunc bs=1k seek=320
 }
 
 function clean() {
@@ -93,9 +93,9 @@ function clean() {
 	rm "$SD_HEAD_1_FILE"
 	rm "$SD_HEAD_2_FILE"
 
-	rm "$MMC_IMAGE_FILE"
-	rm "$MMC_BOOT0_FILE"
-	rm "$MMC_PRELOADER_FILE"
+	rm "$EMMC_IMAGE_FILE"
+	rm "$EMMC_BOOT0_FILE"
+	rm "$EMMC_PRELOADER_FILE"
 }
 
 
