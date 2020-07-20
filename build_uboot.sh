@@ -6,7 +6,7 @@
 function build() {
     if [[ ! -d "$UBOOT_DIR" ]]; then
         # get the source
-        git clone -b "v$UBOOT_VER" --depth 1 https://github.com/frank-w/u-boot.git "$UBOOT_DIR"
+        git clone -b "$UBOOT_VER" --depth 1 https://github.com/frank-w/u-boot.git "$UBOOT_DIR"
     fi
 
     # go to the u-boot directory
