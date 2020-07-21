@@ -12,11 +12,11 @@ CONFIG_DIR="$BASE_DIR/config"
 PATCH_DIR="$BASE_DIR/patches"
 
 UBOOT_VER="2019-01-bpi-r2"
-UBOOT_DIR="$BASE_DIR/include/u-boot"
+UBOOT_DIR="$BASE_DIR/src/u-boot"
 UBOOT_BIN="$UBOOT_DIR/u-boot.bin"
 
 OPENWRT_VER="19.07.3"
-OPENWRT_DIR="$BASE_DIR/include/openwrt"
+OPENWRT_DIR="$BASE_DIR/src/openwrt"
 
 
 ###########
