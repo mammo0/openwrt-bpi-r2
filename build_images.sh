@@ -32,14 +32,36 @@ function build() {
 	# load the partition tale
 	sfdisk "$BASE_IMAGE_FILE" < config/base_img.parttable
 
-	# format the partitions
+	# create mount points
+	MNT_BOOT="$TMP_DIR/boot"
+	MNT_ROOT="$TMP_DIR/root"
+	mkdir -p "$MNT_BOOT"
+	mkdir -p "$MNT_ROOT"
+
+	# create the loop device for editing the image
 	LOOP_DEV=$(sudo losetup -Pf --show "$BASE_IMAGE_FILE")
+
+	# format the partitions
 	sudo mkfs.vfat ${LOOP_DEV}p1
 	sudo mkfs.ext4 ${LOOP_DEV}p2
+
+	# mount
+	sudo mount -t vfat ${LOOP_DEV}p1 "$MNT_BOOT"
+	sudo mount -t ext4 ${LOOP_DEV}p2 "$MNT_ROOT"
+
+	# copy the boot files
+	cp "$CONFIG_DIR/uEnv.txt" "$MNT_BOOT"
+	cp "$OPENWRT_DIR/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/linux-mediatek_mt7623/7623n-bananapi-bpi-r2-kernel.bin" "$MNT_BOOT/uImage"
+
+	# copy/extract the file system
+	sudo tar -xf "$OPENWRT_DIR/bin/targets/mediatek/mt7623/openwrt-$OPENWRT_VER-mediatek-mt7623-device-7623n-bananapi-bpi-r2-rootfs.tar.gz" -C "$MNT_BOOT"
+
+	# unmount
+	sudo umount "$MNT_BOOT"
+	sudo umount "$MNT_ROOT"
+
+	# close the loop device again
 	sudo losetup -d $LOOP_DEV
-
-
-	# TODO: copy filesystem
 
 
 	#########
