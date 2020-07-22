@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+##################################################
+# Check if the build environment is already loaded
+##################################################
+if [ "$BUILD_ENV_LOADED" = "true" ]; then
+    return 0
+fi
+
+
 ###########
 # Variables
 ###########
@@ -99,3 +107,9 @@ function exit() {
 
     command exit "$@"
 }
+
+
+######################################
+# mark the build environment as loaded
+######################################
+BUILD_ENV_LOADED="true"
