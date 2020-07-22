@@ -1,5 +1,5 @@
 --- /dev/null
-+++ feeds/packages/lang/perl/patches/999-fix-build-failure-against-gcc-10.patch
++++ b/feeds/packages/lang/perl/patches/999-fix-build-failure-against-gcc-10.patch
 @@ -0,0 +1,103 @@
 +From 6bd6308fcea3541e505651bf8e8127a4a03d22cd Mon Sep 17 00:00:00 2001
 +From: =?UTF-8?q?Petr=20P=C3=ADsa=C5=99?= <ppisar@redhat.com>
