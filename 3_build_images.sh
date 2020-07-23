@@ -51,10 +51,10 @@ function build() {
 
 	# copy the boot files
 	sudo cp "$CONFIG_DIR/uEnv.txt" "$MNT_BOOT"
-	sudo cp "$OPENWRT_DIR/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/linux-mediatek_mt7623/7623n-bananapi-bpi-r2-kernel.bin" "$MNT_BOOT/uImage"
+	sudo cp "$OPENWRT_KERNEL" "$MNT_BOOT/uImage"
 
 	# copy/extract the file system
-	sudo tar -xf "$OPENWRT_DIR/bin/targets/mediatek/mt7623/openwrt-$OPENWRT_VER-mediatek-mt7623-device-7623n-bananapi-bpi-r2-rootfs.tar.gz" -C "$MNT_ROOT"
+	sudo tar -xf "$OPENWRT_ROOTFS" -C "$MNT_ROOT"
 
 	# unmount
 	sudo umount "$MNT_BOOT"
@@ -70,7 +70,7 @@ function build() {
 	echo "Building SD card image..."
 
 	# download precompiled binaries for SD card
-	pushd bin
+	pushd $ARTIFACTS_DIR
 	for image in $SD_PRELOADER $SD_HEAD_1 $SD_HEAD_2; do
 		curl -LJO https://github.com/BPI-SINOVOIP/BPI-files/raw/master/SD/100MB/${image}.gz
 		gunzip -f ${image}.gz
@@ -91,7 +91,7 @@ function build() {
 	echo "Building MMC image..."
 
 	# download precompiled binary for MMC
-	pushd bin
+	pushd $ARTIFACTS_DIR
 	curl -LJO https://github.com/BPI-SINOVOIP/BPI-files/raw/master/SD/100MB/${EMMC_PRELOADER}.gz
 	gunzip -f ${EMMC_PRELOADER}.gz
 	popd

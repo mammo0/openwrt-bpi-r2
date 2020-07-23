@@ -33,8 +33,19 @@ function build() {
 }
 
 
+function collect_artifacts() {
+    # the kernel
+    cp "$OPENWRT_DIR/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/linux-mediatek_mt7623/7623n-bananapi-bpi-r2-kernel.bin" "$OPENWRT_KERNEL"
+    # the root file system
+    cp "$OPENWRT_DIR/bin/targets/mediatek/mt7623/openwrt-$OPENWRT_VER-mediatek-mt7623-device-7623n-bananapi-bpi-r2-rootfs.tar.gz" "$OPENWRT_ROOTFS"
+}
+
+
 function clean() {
     rm -rf "$OPENWRT_DIR"
+
+    rm "$OPENWRT_KERNEL"
+    rm "$OPENWRT_ROOTFS"
 }
 
 

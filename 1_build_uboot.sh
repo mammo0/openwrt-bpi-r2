@@ -26,8 +26,16 @@ function build() {
 }
 
 
+function collect_artifacts() {
+    # the only artifact is the U-Boot binary
+    cp "$UBOOT_DIR/u-boot.bin" "$UBOOT_BIN"
+}
+
+
 function clean() {
     rm -rf "$UBOOT_DIR"
+
+    rm "$UBOOT_BIN"
 }
 
 
