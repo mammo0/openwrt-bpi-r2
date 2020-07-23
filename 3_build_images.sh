@@ -27,7 +27,7 @@ function build() {
 	echo "Creating main image file..."
 
 	# create the image
-	dd if=/dev/zero of="$BASE_IMAGE_FILE" bs=1k count=512k
+	dd if=/dev/zero of="$BASE_IMAGE_FILE" bs=1KB count=65KB
 
 	# load the partition tale
 	sfdisk "$BASE_IMAGE_FILE" < config/base_img.parttable
