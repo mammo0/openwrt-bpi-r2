@@ -19,7 +19,7 @@ TMP_DIR=$(mktemp -d)
 
 BASE_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-BIN_DIR="$BASE_DIR/bin"
+ARTIFACTS_DIR="$BASE_DIR/artifacts"
 CONFIG_DIR="$BASE_DIR/config"
 PATCH_DIR="$BASE_DIR/patches"
 OUT_DIR="$BASE_DIR/out"
