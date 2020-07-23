@@ -37,7 +37,7 @@ If you want to build the images by yourself, please follow these instructions:
 3. Run **2_build_openwrt.sh**
 4. Run **3_build_images.sh**
 
-The resulting images are placed in the main directory of this repository.
+The resulting images are placed in the `out` directory of this repository.
 
 For cleaning the compilation area append `clean` argument to any of the above mentioned scripts.
 
