@@ -76,9 +76,9 @@ function apply_patches() {
         # check if it's a git patch or not
         if grep -q -- "--git" "$patch_file"; then
             # ignore a or b path prefix in the patch file
-            patch -N -d "$2" -p1 < "$patch_file"
+            out=$(patch -N -d "$2" -p1 < "$patch_file") || echo "${out}" | grep "Skipping patch" -q || (echo "$out" && false)
         else
-            patch -N -d "$2" < "$patch_file"
+            out=$(patch -N -d "$2" < "$patch_file") || echo "${out}" | grep "Skipping patch" -q || (echo "$out" && false)
         fi
     done
 }
