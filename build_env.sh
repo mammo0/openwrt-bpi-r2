@@ -8,6 +8,10 @@ if [ "$BUILD_ENV_LOADED" = "true" ]; then
 fi
 
 
+# exit if a command fails
+set -e
+
+
 ###########
 # Variables
 ###########
