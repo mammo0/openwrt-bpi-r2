@@ -50,11 +50,11 @@ function build() {
 	sudo mount -t ext4 ${LOOP_DEV}p2 "$MNT_ROOT"
 
 	# copy the boot files
-	cp "$CONFIG_DIR/uEnv.txt" "$MNT_BOOT"
-	cp "$OPENWRT_DIR/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/linux-mediatek_mt7623/7623n-bananapi-bpi-r2-kernel.bin" "$MNT_BOOT/uImage"
+	sudo cp "$CONFIG_DIR/uEnv.txt" "$MNT_BOOT"
+	sudo cp "$OPENWRT_DIR/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/linux-mediatek_mt7623/7623n-bananapi-bpi-r2-kernel.bin" "$MNT_BOOT/uImage"
 
 	# copy/extract the file system
-	sudo tar -xf "$OPENWRT_DIR/bin/targets/mediatek/mt7623/openwrt-$OPENWRT_VER-mediatek-mt7623-device-7623n-bananapi-bpi-r2-rootfs.tar.gz" -C "$MNT_BOOT"
+	sudo tar -xf "$OPENWRT_DIR/bin/targets/mediatek/mt7623/openwrt-$OPENWRT_VER-mediatek-mt7623-device-7623n-bananapi-bpi-r2-rootfs.tar.gz" -C "$MNT_ROOT"
 
 	# unmount
 	sudo umount "$MNT_BOOT"
@@ -79,9 +79,9 @@ function build() {
 
 	# creating the SD image
 	cp "$BASE_IMAGE_FILE" "$SD_IMAGE_FILE"
-	dd if=bin/"$SD_HEAD_1_FILE" of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=0
-	dd if=bin/"$SD_HEAD_2_FILE" of="$SD_IMAGE_FILE" conv=notrunc bs=512 seek=1
-	dd if=bin/"$SD_PRELOADER_FILE" of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=2
+	dd if="$SD_HEAD_1_FILE" of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=0
+	dd if="$SD_HEAD_2_FILE" of="$SD_IMAGE_FILE" conv=notrunc bs=512 seek=1
+	dd if="$SD_PRELOADER_FILE" of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=2
 	dd if="$UBOOT_BIN" of="$SD_IMAGE_FILE" conv=notrunc bs=1k seek=320
 
 
