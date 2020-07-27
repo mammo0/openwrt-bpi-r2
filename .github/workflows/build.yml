@@ -1,8 +1,5 @@
 name: Build OpenWRT for BPi-R2
-on:
-    push:
-        tags:
-            - v*
+on: push
 
 jobs:
     build_uboot:
