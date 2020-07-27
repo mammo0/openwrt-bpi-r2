@@ -72,3 +72,20 @@ After logging into the system via SSH or Serial console you
     ```shell
     echo 0 > /sys/block/mmcblk0boot0/force_ro
     ```
+
+
+
+### Upgrading the firmware
+**A "normal" upgrade via the LuCi-Webinterface is not possible!**
+
+To perform an upgrade a manual reflash of the image(s) is needed like it's described in the previous section.
+
+**Importatnt: This would mean to lose all custom settings!** So it's necessary to perform a backup of the settings first. This can be done with the LuCi-Webinterface:
+
+    System > Backup / Flash Firmware
+
+After the the upgrade the settings can be restored on the same page.
+
+
+##### EMMC
+The upgrade of the EMMC device can be done while the system is runing from that device. Usually only the `BPI-R2_EMMC.img` image needs to be (re-)flashed since this contains the filesystem and kernel.
