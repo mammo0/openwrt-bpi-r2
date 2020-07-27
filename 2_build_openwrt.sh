@@ -49,4 +49,33 @@ function clean() {
 }
 
 
+# preperation for building
+vermagic_patch_file="$PATCH_DIR/openwrt/fix_custom_kernel_vermagic.patch"
+vermagic_patch=$'diff --git a/include/kernel-defaults.mk b/include/kernel-defaults.mk
+--- a/include/kernel-defaults.mk
++++ b/include/kernel-defaults.mk
+@@ -105,7 +105,7 @@
+ 		cp $(LINUX_DIR)/.config.set $(LINUX_DIR)/.config.prev; \
+ 	}
+ 	$(_SINGLE) [ -d $(LINUX_DIR)/user_headers ] || $(KERNEL_MAKE) INSTALL_HDR_PATH=$(LINUX_DIR)/user_headers headers_install
+-	grep \'=[ym]\' $(LINUX_DIR)/.config.set | LC_ALL=C sort | mkhash md5 > $(LINUX_DIR)/.vermagic
++	echo "<vermagic>" > $(LINUX_DIR)/.vermagic
+ endef
+
+ define Kernel/Configure/Initramfs'
+
+# the official needed vermagic is used in the openwrt package dependencies
+official_vermagic=$(
+    # get the official package list
+    curl -s https://downloads.openwrt.org/releases/$OPENWRT_VER/targets/mediatek/mt7623/packages/Packages | \
+    # the vermagic hides in the dependencies of the 'kmod' packages
+    grep -m 1 "Depends: kernel" | \
+    # extract the vermagic
+    sed -E 's/.*([a-zA-Z0-9]{32}).*/\1/'
+)
+
+# write the temporary patch
+echo "$vermagic_patch" | sed "s/<vermagic>/$official_vermagic/g" > "$vermagic_patch_file"
+
+
 entry_point "$@"
