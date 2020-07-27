@@ -1,0 +1,155 @@
+name: Build OpenWRT for BPi-R2
+on:
+    push:
+        tags:
+            - v*
+
+jobs:
+    build_uboot:
+        name: U-Boot builder
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install dependencies
+              run: |
+                  sudo apt-get install -y \
+                      build-essential \
+                      git \
+                      curl \
+                      gcc-arm-linux-gnueabihf \
+                      bison \
+                      flex \
+                      python3 \
+                      python3-dev \
+                      swig \
+                      xxd
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Load environment
+              uses: c-py/action-dotenv-to-setenv@v1
+              with:
+                  env-file: build_variables.sh
+            - name: Build
+              run: ./1_build_uboot.sh
+            - name: Save binary
+              uses: actions/upload-artifact@v2
+              with:
+                  name: uboot_bin
+                  path: ${{ env.UBOOT_BIN }}
+
+    build_openwrt:
+        name: OpenWRT builder
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install dependencies
+              run: |
+                  sudo apt-get install -y \
+                      build-essential \
+                      git \
+                      curl \
+                      ecj \
+                      fastjar \
+                      file \
+                      g++ \
+                      gawk \
+                      gettext \
+                      java-propose-classpath \
+                      libelf-dev \
+                      libncurses5-dev \
+                      libssl-dev \
+                      python \
+                      python3 \
+                      python3-distutils \
+                      subversion \
+                      unzip \
+                      wget \
+                      zlib1g-dev
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Load environment
+              uses: c-py/action-dotenv-to-setenv@v1
+              with:
+                  env-file: build_variables.sh
+            - name: Build
+              run: ./2_build_openwrt.sh
+            - name: Save kernel
+              uses: actions/upload-artifact@v2
+              with:
+                  name: openwrt_kernel
+                  path: ${{ env.OPENWRT_KERNEL }}
+            - name: Save rootfs
+              uses: actions/upload-artifact@v2
+              with:
+                  name: openwrt_rootfs
+                  path: ${{ env.OPENWRT_ROOTFS }}
+
+    build_images:
+        name: Image builder
+        needs: [build_uboot, build_openwrt]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install dependencies
+              run: |
+                  sudo apt-get install -y \
+                      build-essential \
+                      curl \
+                      git
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Load environment
+              uses: c-py/action-dotenv-to-setenv@v1
+              with:
+                  env-file: build_variables.sh
+            - name: Get U-Boot binary
+              uses: actions/download-artifact@v2
+              with:
+                  name: uboot_bin
+                  path: ${{ env.UBOOT_BIN }}
+            - name: Get OpenWRT kernel
+              uses: actions/download-artifact@v2
+              with:
+                  name: openwrt_kernel
+                  path: ${{ env.OPENWRT_KERNEL }}
+            - name: Get OpenWRT rootfs
+              uses: actions/download-artifact@v2
+              with:
+                  name: openwrt_rootfs
+                  path: ${{ env.OPENWRT_ROOTFS }}
+            - name: Build
+              run: ./3_build_images.sh
+            - name: Create GH Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.ref }}
+                  release_name: OpenWRT BPi-R2 ${{ github.ref }}
+                  draft: false
+                  prerelease: false
+            - name: Upload SD card image
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ${{ env.SD_IMAGE_FILE }}
+                  asset_name: ${{ env.SD_IMAGE_FILE }}
+                  asset_content_type: application/octet-stream
+            - name: Upload EMMC image
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ${{ env.EMMC_IMAGE_FILE }}
+                  asset_name: ${{ env.EMMC_IMAGE_FILE }}
+                  asset_content_type: application/octet-stream
+            - name: Upload EMMC boot image
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ${{ env.EMMC_BOOT0_FILE }}
+                  asset_name: ${{ env.EMMC_BOOT0_FILE }}
+                  asset_content_type: application/octet-stream
