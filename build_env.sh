@@ -15,7 +15,13 @@ set -e
 ###########
 # Variables
 ###########
-. build_variables.sh
+# the variables are stored in an .env file that is created by 0_prepare.sh
+if [ ! -f ".env" ]; then
+    echo "Please run 0_prepare.sh first!" >&2
+    exit 1
+fi
+# source .env file
+. .env
 
 
 ###########

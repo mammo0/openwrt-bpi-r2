@@ -24,10 +24,10 @@ jobs:
                       xxd
             - name: Checkout
               uses: actions/checkout@v2
+            - name: Prepare
+              run: ./0_prepare.sh
             - name: Load environment
               uses: c-py/action-dotenv-to-setenv@v1
-              with:
-                  env-file: build_variables.sh
             - name: Build
               run: ./1_build_uboot.sh
             - name: Save binary
@@ -65,10 +65,10 @@ jobs:
                       zlib1g-dev
             - name: Checkout
               uses: actions/checkout@v2
+            - name: Prepare
+              run: ./0_prepare.sh
             - name: Load environment
               uses: c-py/action-dotenv-to-setenv@v1
-              with:
-                  env-file: build_variables.sh
             - name: Build
               run: ./2_build_openwrt.sh
             - name: Save kernel
@@ -95,10 +95,10 @@ jobs:
                       git
             - name: Checkout
               uses: actions/checkout@v2
+            - name: Prepare
+              run: ./0_prepare.sh
             - name: Load environment
               uses: c-py/action-dotenv-to-setenv@v1
-              with:
-                  env-file: build_variables.sh
             - name: Get U-Boot binary
               uses: actions/download-artifact@v2
               with:
