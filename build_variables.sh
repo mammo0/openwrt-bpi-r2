@@ -1,16 +1,8 @@
 #!/usr/bin/env bash
 
-#################################################
-# Check if the build variables are already loaded
-#################################################
-if [ "$BUILD_VARIABLES_LOADED" = "true" ]; then return 0; fi
-
-
-###########
-# Variables
-###########
-TMP_DIR=$(mktemp -d)
-
+##################
+# Global variables
+##################
 BASE_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 ARTIFACTS_DIR="$BASE_DIR/artifacts"
@@ -30,9 +22,3 @@ OPENWRT_ROOTFS="$ARTIFACTS_DIR/openwrt-rootfs.tar.gz"
 SD_IMAGE_FILE="$OUT_DIR/BPI-R2_SD.img"
 EMMC_BOOT0_FILE="$OUT_DIR/BPI-R2_EMMC_boot0.img"
 EMMC_IMAGE_FILE="$OUT_DIR/BPI-R2_EMMC.img"
-
-
-####################################
-# mark the build variables as loaded
-####################################
-BUILD_VARIABLES_LOADED="true"

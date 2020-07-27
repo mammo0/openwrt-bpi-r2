@@ -3,6 +3,7 @@
 . build_env.sh
 
 
+TMP_DIR=$(mktemp -d)
 BASE_IMAGE_FILE="$TMP_DIR/base_img.img"
 
 
