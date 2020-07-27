@@ -3,9 +3,7 @@
 #################################################
 # Check if the build variables are already loaded
 #################################################
-if [ "$BUILD_VARIABLES_LOADED" = "true" ]; then
-    return 0
-fi
+if [ "$BUILD_VARIABLES_LOADED" = "true" ]; then return 0; fi
 
 
 ###########
