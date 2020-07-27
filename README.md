@@ -67,3 +67,8 @@ After logging into the system via SSH or Serial console you
     dd if=BPI-R2_EMMC_boot0.img of=/dev/mmcblk0boot0
     ```
     *Assuming that `mmcblk0boot0` is the EMMC device.*
+
+    If you get an error that you don't have permissions for this operation, you may need to activate write mode for the boot partition of the EMMC device:
+    ```shell
+    echo 0 > /sys/block/mmcblk0boot0/force_ro
+    ```
