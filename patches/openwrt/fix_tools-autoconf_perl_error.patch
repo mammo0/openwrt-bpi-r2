@@ -1,13 +1,13 @@
 diff --git a/tools/autoconf/Makefile b/tools/autoconf/Makefile
-index 6eb64d7..3365dd7 100644
+index 6eb64d7..2934a30 100644
 --- a/tools/autoconf/Makefile
 +++ b/tools/autoconf/Makefile
 @@ -19,7 +19,7 @@ HOST_CONFIGURE_ARGS += \
-        --datarootdir=$(STAGING_DIR_HOST)/share
+ 	--datarootdir=$(STAGING_DIR_HOST)/share
  
  HOST_CONFIGURE_VARS += \
--       PERL="/usr/bin/env perl"
+-	PERL="/usr/bin/env perl"
 +       PERL="/usr/bin/perl"
  
  define Host/Compile
-        export SHELL="$(BASH)"; $(MAKE) -C $(HOST_BUILD_DIR)
+ 	export SHELL="$(BASH)"; $(MAKE) -C $(HOST_BUILD_DIR)
