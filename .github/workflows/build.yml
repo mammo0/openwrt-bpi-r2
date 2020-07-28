@@ -1,5 +1,8 @@
 name: Build OpenWRT for BPi-R2
-on: push
+on:
+    push:
+        tags:
+            - v*
 
 env:
     DOCKER_IMAGE_FILE: ${{ env.GITHUB_WORKSPACE }}/docker_image

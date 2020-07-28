@@ -27,8 +27,8 @@ function build() {
     make download
 
     # build
-    # N_CPU=$(grep ^processor /proc/cpuinfo  | wc -l)
-    make -j1 V=s
+    N_CPU=$(grep ^processor /proc/cpuinfo  | wc -l)
+    make -j$N_CPU
     popd
 }
 
