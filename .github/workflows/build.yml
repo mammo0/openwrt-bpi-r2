@@ -1,9 +1,30 @@
 name: Build OpenWRT for BPi-R2
 on: push
 
+env:
+    DOCKER_IMAGE_FILE: ${{ env.GITHUB_WORKSPACE }}/docker_image
+    DOCKER_IMAGE_TAG: bpi_r2-openwrt:latest
+
 jobs:
-    build_in_docker:
-        name: Builder
+    build_docker_image:
+        name: Docker image builder
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Build Docker image
+              run: docker build -t $DOCKER_IMAGE_TAG --build-arg PUID=`id -u` --build-arg PGID=`id -g` .
+            - name: Save Docker image
+              run: docker save -o $DOCKER_IMAGE_FILE $DOCKER_IMAGE_TAG
+            - name: Upload Docker image as artifact
+              uses: actions/upload-artifact@v2
+              with:
+                  name: docker_image
+                  path: ${{ env.DOCKER_IMAGE_FILE }}
+
+    build_uboot:
+        name: U-Boot builder
+        needs: build_docker_image
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -13,10 +34,96 @@ jobs:
             - name: Load environment
               uses: c-py/action-dotenv-to-setenv@v1
 
-            - name: Build Docker image
-              run: docker build -t bpi_r2-openwrt --build-arg PUID=`id -u` --build-arg PGID=`id -g` .
-            - name: Build images
-              run: docker run --privileged -v $OUT_DIR:/out bpi_r2-openwrt
+            - name: Get Docker image artifact
+              uses: actions/download-artifact@v2
+              with:
+                  name: docker_image
+                  path: ${{ env.DOCKER_IMAGE_FILE }}
+            - name: Load Docker image
+              run: docker load -i $DOCKER_IMAGE_FILE
+
+            - name: Build
+              run: docker run --privileged -v "$ARTIFACTS_DIR":/out $DOCKER_IMAGE_TAG uboot
+
+            - name: Save binary
+              uses: actions/upload-artifact@v2
+              with:
+                  name: uboot_bin
+                  path: ${{ env.UBOOT_BIN }}
+
+    build_openwrt:
+        name: OpenWRT builder
+        needs: build_docker_image
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Prepare
+              run: ./0_prepare.sh
+            - name: Load environment
+              uses: c-py/action-dotenv-to-setenv@v1
+
+            - name: Get Docker image artifact
+              uses: actions/download-artifact@v2
+              with:
+                  name: docker_image
+                  path: ${{ env.DOCKER_IMAGE_FILE }}
+            - name: Load Docker image
+              run: docker load -i $DOCKER_IMAGE_FILE
+
+            - name: Build
+              run: docker run --privileged -v "$ARTIFACTS_DIR":/out $DOCKER_IMAGE_TAG openwrt
+
+            - name: Save kernel
+              uses: actions/upload-artifact@v2
+              with:
+                  name: openwrt_kernel
+                  path: ${{ env.OPENWRT_KERNEL }}
+            - name: Save rootfs
+              uses: actions/upload-artifact@v2
+              with:
+                  name: openwrt_rootfs
+                  path: ${{ env.OPENWRT_ROOTFS }}
+
+     build_images:
+        name: Image builder
+        needs: [build_uboot, build_openwrt]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install dependencies
+              run: |
+                  sudo apt-get install -y \
+                      build-essential \
+                      curl \
+                      dosfstools \
+                      e2fsprogs \
+                      git
+
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Prepare
+              run: ./0_prepare.sh
+            - name: Load environment
+              uses: c-py/action-dotenv-to-setenv@v1
+
+            - name: Get U-Boot binary
+              uses: actions/download-artifact@v2
+              with:
+                  name: uboot_bin
+                  path: ${{ env.UBOOT_BIN }}
+            - name: Get OpenWRT kernel
+              uses: actions/download-artifact@v2
+              with:
+                  name: openwrt_kernel
+                  path: ${{ env.OPENWRT_KERNEL }}
+            - name: Get OpenWRT rootfs
+              uses: actions/download-artifact@v2
+              with:
+                  name: openwrt_rootfs
+                  path: ${{ env.OPENWRT_ROOTFS }}
+
+            - name: Build
+              run: ./3_build_images.sh
 
             - name: Create GH Release
               id: create_release
