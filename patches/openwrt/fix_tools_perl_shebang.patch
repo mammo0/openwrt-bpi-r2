@@ -1,0 +1,59 @@
+diff --git a/tools/autoconf/Makefile b/tools/autoconf/Makefile
+index 6eb64d7..3365dd7 100644
+--- a/tools/autoconf/Makefile
++++ b/tools/autoconf/Makefile
+@@ -19,7 +19,7 @@ HOST_CONFIGURE_ARGS += \
+ 	--datarootdir=$(STAGING_DIR_HOST)/share
+ 
+ HOST_CONFIGURE_VARS += \
+-	PERL="/usr/bin/env perl"
++	PERL="/usr/bin/perl"
+ 
+ define Host/Compile
+ 	export SHELL="$(BASH)"; $(MAKE) -C $(HOST_BUILD_DIR)
+diff --git a/tools/automake/Makefile b/tools/automake/Makefile
+index c016f1d..5f13f9f 100644
+--- a/tools/automake/Makefile
++++ b/tools/automake/Makefile
+@@ -21,7 +21,7 @@ HOST_CONFIGURE_ARGS += \
+ 	--disable-silent-rules
+ 
+ HOST_CONFIGURE_VARS += \
+-	PERL="/usr/bin/env perl" \
++	PERL="/usr/bin/perl" \
+ 	am_cv_prog_PERL_ithreads=no
+ 
+ define Host/Configure
+diff --git a/tools/missing-macros/src/bin/help2man b/tools/missing-macros/src/bin/help2man
+index 6cbec57..4f94456 100755
+--- a/tools/missing-macros/src/bin/help2man
++++ b/tools/missing-macros/src/bin/help2man
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env perl
++#!/usr/bin/perl
+ 
+ use strict;
+ use Getopt::Long;
+diff --git a/tools/missing-macros/src/bin/makeinfo b/tools/missing-macros/src/bin/makeinfo
+index e163cba..8964892 100755
+--- a/tools/missing-macros/src/bin/makeinfo
++++ b/tools/missing-macros/src/bin/makeinfo
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env perl
++#!/usr/bin/perl
+ 
+ use strict;
+ use Getopt::Long;
+diff --git a/tools/quilt/patches/000-relocatable.patch b/tools/quilt/patches/000-relocatable.patch
+index 0e0eb73..6350e2f 100644
+--- a/tools/quilt/patches/000-relocatable.patch
++++ b/tools/quilt/patches/000-relocatable.patch
+@@ -87,7 +87,7 @@
+  DATE :=		@DATE@
+ -PERL :=		@PERL@
+ -BASH :=		@BASH@
+-+PERL :=		/usr/bin/env perl
+++PERL :=		/usr/bin/perl
+ +BASH :=		/usr/bin/env bash
+  SHELL:=		@BASH@ # It does not work if dash is used as a shell, for example
+  GREP :=		@GREP@
