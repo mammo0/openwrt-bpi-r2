@@ -25,6 +25,7 @@ If you want to build the images by yourself, please follow these instructions:
 1. Install the requiered dependencies:
     - **git** - just for the sake of completeness ;)
     - **curl**
+    - **dosfstools** and **e2fsprogs** for image creation
     - for U-Boot:
         - **bison**
         - **gcc** for **arm-linux-gnueabihf** architecture (have a look at your distro documentaion for the right package)
