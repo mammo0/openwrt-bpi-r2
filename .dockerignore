@@ -1,0 +1,13 @@
+# the .env file is created dynamically
+/.env
+
+# the needed source code
+/src/openwrt
+/src/u-boot
+
+# everything in the artifacts and out directory
+/artifacts/*
+/out/*
+
+# this patch is created dynamical at runtime
+/patches/openwrt/fix_custom_kernel_vermagic.patch

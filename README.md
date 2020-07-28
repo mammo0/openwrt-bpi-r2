@@ -44,6 +44,28 @@ For cleaning the compilation area append `clean` argument to any of the above me
 
 
 
+### Building with Docker
+If you don't want to setup the build context on your system but also want to build local, you can use docker for building it.
+
+##### 1) Build the Docker image
+To build the Docker image run:
+```shell
+docker build -t bpi_r2-openwrt .
+```
+For customizations you can specify the following build arguments:
+- `BUILD_USER`: The name for the user that runs the build process.
+- `PUID`: The user ID of that user.
+- `PGID`: The group ID that belongs to that user.
+
+##### 2) Run the Docker image to build the OpenWRT images
+To start the automated build process run (the `--privileged` argument is required for the image creation):
+```shell
+docker run --privileged -v `pwd`:/out bpi_r2-openwrt
+```
+Afterwards the resulting images should be available in your current working directory. Otherwise check the `-v` argument. On container side the path should be equal to the `VOLUME_DIR` path that is defined in the Dockerfile.
+
+
+
 ### Flashing the images
 
 ##### SD card
