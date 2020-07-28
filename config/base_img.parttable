@@ -2,7 +2,6 @@ label: dos
 label-id: 0xf04864d5
 device: base_img.bin
 unit: sectors
-sector-size: 512
 
 base_img.bin1 : start=       9766, size=      19532, type=b
 base_img.bin2 : start=      29298,                   type=83
