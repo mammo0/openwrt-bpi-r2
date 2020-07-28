@@ -39,24 +39,15 @@ jobs:
               run: |
                   sudo apt-get install -y \
                       build-essential \
-                      git \
-                      curl \
-                      ecj \
-                      fastjar \
-                      file \
-                      g++ \
+                      ccache \
                       gawk \
+                      git \
                       gettext \
-                      java-propose-classpath \
-                      libelf-dev \
                       libncurses5-dev \
                       libssl-dev \
-                      python \
-                      python3 \
-                      python3-distutils \
                       subversion \
-                      unzip \
-                      wget \
+                      xsltproc \
+                      zip \
                       zlib1g-dev
             - name: Checkout
               uses: actions/checkout@v2
