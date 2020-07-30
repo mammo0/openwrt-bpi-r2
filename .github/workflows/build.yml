@@ -88,7 +88,7 @@ jobs:
                   name: openwrt_rootfs
                   path: ${{ env.OPENWRT_ROOTFS }}
 
-     build_images:
+    build_images:
         name: Image builder
         needs: [build_uboot, build_openwrt]
         runs-on: ubuntu-latest
