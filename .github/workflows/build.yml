@@ -5,7 +5,7 @@ on:
             - v*
 
 env:
-    DOCKER_IMAGE_FILE: ${{ env.GITHUB_WORKSPACE }}/docker_image
+    DOCKER_IMAGE_FILE: ${{ github.workspace }}/docker_image
     DOCKER_IMAGE_TAG: bpi_r2-openwrt:latest
 
 jobs:
