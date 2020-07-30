@@ -34,7 +34,8 @@ If you want to build the images by yourself, please follow these instructions:
         - **swig**
         - **xxd**
     - for OpenWRT see the official documentaion: **https://openwrt.org/docs/guide-developer/build-system/install-buildsystem#examples_of_package_installations**
-2. Run **1_build_uboot.sh**
+2. Run **0_prepare.sh**
+3. Run **1_build_uboot.sh**
 3. Run **2_build_openwrt.sh**
 4. Run **3_build_images.sh**
 
