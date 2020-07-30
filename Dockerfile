@@ -62,4 +62,5 @@ WORKDIR "$BUILD_DIR"
 
 USER $BUILD_USER
 VOLUME "$VOLUME_DIR"
-ENTRYPOINT "$BUILD_DIR/docker_entrypoint.sh"
+COPY docker_entrypoint.sh /usr/bin/
+ENTRYPOINT ["docker_entrypoint.sh"]
