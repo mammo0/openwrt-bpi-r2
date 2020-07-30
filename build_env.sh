@@ -18,7 +18,7 @@ set -e
 # the variables are stored in an .env file that is created by 0_prepare.sh
 if [ ! -f ".env" ]; then
     echo "Please run 0_prepare.sh first!" >&2
-    exit 1
+    return 1
 fi
 # source .env file
 . .env
@@ -31,6 +31,9 @@ fi
 # this function should be called when entering the environment
 function _enter() {
     pushd "$BASE_DIR"
+
+    # mark the entering process as complete
+    export BUILD_ENV_ENTERED="true"
 }
 
 # this function should be called when leaving the environment
@@ -38,8 +41,13 @@ function _leave() {
     # remove the temporary directory
     rm -rf "$TMP_DIR"
 
-    # equivalent to the pushd in the _enter function
-    popd
+    # the following steps should only be taken if _enter was called before
+    if [ "$BUILD_ENV_ENTERED" = "true" ]; then
+        # equivalent to the pushd in the _enter function
+        popd
+
+        unset BUILD_ENV_ENTERED
+    fi
 }
 
 # try to call the 'build' function
