@@ -12,10 +12,12 @@ image of **OpenWRT**. The current version is
 
 **Many thanks to** [frank-w](https://github.com/frank-w) for making this possible.
 
+![Build OpenWRT for BPi-R2](https://github.com/mammo0/openwrt-bpi-r2/workflows/Build%20OpenWRT%20for%20BPi-R2/badge.svg)
+
 
 
 ### Download the precompiled images
-There's a GitHub workflow that builds the SD card and EMMC image of this repository. You can download them directly from the releases page.
+There's a GitHub workflow that builds the SD card and EMMC image of this repository. You can download them directly from the [releases page](https://github.com/mammo0/openwrt-bpi-r2/releases).
 
 
 
