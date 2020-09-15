@@ -21,7 +21,7 @@ UBOOT_VER="2019-01-bpi-r2"
 UBOOT_DIR="$BASE_DIR/src/u-boot"
 UBOOT_BIN="$ARTIFACTS_DIR/u-boot.bin"
 
-OPENWRT_VER="19.07.3"
+OPENWRT_VER="19.07.4"
 OPENWRT_DIR="$BASE_DIR/src/openwrt"
 OPENWRT_KERNEL="$ARTIFACTS_DIR/openwrt-kernel.bin"
 OPENWRT_ROOTFS="$ARTIFACTS_DIR/openwrt-rootfs.tar.gz"
