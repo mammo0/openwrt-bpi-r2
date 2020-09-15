@@ -6,7 +6,7 @@ This repository contains a collection of scripts for building a
 
 image of **OpenWRT**. The current version is
 
-    19.07.3
+    19.07.4
 
 </br>
 
