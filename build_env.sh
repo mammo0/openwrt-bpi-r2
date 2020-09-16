@@ -84,6 +84,32 @@ function apply_patches() {
 }
 
 
+function get_loopdev() {
+    if [ ! -f "$1" ]; then
+        echo "No image specified!" 1>&2
+        return 1
+    fi
+    # create the loop device for editing the image
+	loop_dev=$(sudo losetup -Pf --show "$1")
+
+	# workaround if losetup can't create 'p1' and 'p2' nods
+	# drop the first line, as this is our LOOPDEV itself, but we only want the child partitions
+	loop_partitions=$(lsblk --raw --output "MAJ:MIN" --noheadings ${loop_dev} | tail -n +2)
+	loop_partitions_counter=1
+	for i in $loop_partitions; do
+		maj=$(echo $i | cut -d: -f1)
+		min=$(echo $i | cut -d: -f2)
+		if [ ! -e "${loop_dev}p${loop_partitions_counter}" ]; then
+			sudo mknod ${loop_dev}p${loop_partitions_counter} b $maj $min
+		fi
+		loop_partitions_counter=$((loop_partitions_counter + 1))
+	done
+
+    # return the loop device
+    echo "$loop_dev"
+}
+
+
 # override of the pusd and popd functions to suppress output
 function pushd() {
     command pushd "$@" > /dev/null

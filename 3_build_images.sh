@@ -40,20 +40,7 @@ function build() {
 	mkdir -p "$MNT_ROOT"
 
 	# create the loop device for editing the image
-	LOOP_DEV=$(sudo losetup -Pf --show "$BASE_IMAGE_FILE")
-
-	# workaround if losetup can't create 'p1' and 'p2' nods
-	# drop the first line, as this is our LOOPDEV itself, but we only want the child partitions
-	LOOP_PARTITIONS=$(lsblk --raw --output "MAJ:MIN" --noheadings ${LOOP_DEV} | tail -n +2)
-	LOOP_PARTITIONS_COUNTER=1
-	for i in $LOOP_PARTITIONS; do
-		MAJ=$(echo $i | cut -d: -f1)
-		MIN=$(echo $i | cut -d: -f2)
-		if [ ! -e "${LOOP_DEV}p${LOOP_PARTITIONS_COUNTER}" ]; then
-			sudo mknod ${LOOP_DEV}p${LOOP_PARTITIONS_COUNTER} b $MAJ $MIN
-		fi
-		LOOP_PARTITIONS_COUNTER=$((LOOP_PARTITIONS_COUNTER + 1))
-	done
+	LOOP_DEV=$(get_loopdev "$BASE_IMAGE_FILE")
 
 	# format the partitions
 	sudo mkfs.vfat ${LOOP_DEV}p1
