@@ -36,10 +36,13 @@ If you want to build the images by yourself, please follow these instructions:
         - **swig**
         - **xxd**
     - for OpenWRT see the official documentaion: **https://openwrt.org/docs/guide-developer/build-system/install-buildsystem#examples_of_package_installations**
+    - for restoring:
+        - **qemu-arm-static** (have a look at your distro documentaion for the right package) The static binaries must be registred via binfmt!
 2. Run **0_prepare.sh**
 3. Run **1_build_uboot.sh**
 3. Run **2_build_openwrt.sh**
 4. Run **3_build_images.sh**
+5. (Optional) Run **restore_config.sh** (Please have a look at the restoring section below for more information)
 
 The resulting images are placed in the `out` directory of this repository.
 
@@ -50,7 +53,7 @@ For cleaning the compilation area append `clean` argument to any of the above me
 ### Building with Docker
 If you don't want to setup the build context on your system but also want to build local, you can use docker for building it.
 
-##### 1) Build the Docker image
+#### 1) Build the Docker image
 To build the Docker image run:
 ```shell
 docker build -t bpi_r2-openwrt .
@@ -60,7 +63,7 @@ For customizations you can specify the following build arguments:
 - `PUID`: The user ID of that user.
 - `PGID`: The group ID that belongs to that user.
 
-##### 2) Run the Docker image to build the OpenWRT images
+#### 2) Run the Docker image to build the OpenWRT images
 To start the automated build process run (the `--privileged` argument is required for the image creation):
 ```shell
 docker run --privileged -v `pwd`:/out bpi_r2-openwrt [uboot|openwrt]
@@ -77,14 +80,14 @@ The optional arguments:
 
 ### Flashing the images
 
-##### SD card
+#### SD card
 Just flash the imge to the SD card, e.g. with `dd`:
 
 ```shell
 dd if=BPI-R2_SD.img of=/dev/<sd_device>
 ```
 
-##### EMMC
+#### EMMC
 You need a running system on the Banana Pi for flashing. For this you can also use the SD card version of OpenWRT.
 
 After logging into the system via SSH or Serial console you
@@ -112,12 +115,39 @@ After logging into the system via SSH or Serial console you
 
 To perform an upgrade a manual reflash of the image(s) is needed like it's described in the previous section.
 
-**Importatnt: This would mean to lose all custom settings!** So it's necessary to perform a backup of the settings first. This can be done with the LuCi-Webinterface:
+**Warning: This would mean to lose all custom settings!** So it's necessary to perform a backup of the settings first!
+
+#### Backup settings
+One way is via the LuCi-Webinterface:
 
     System > Backup / Flash Firmware
 
-After the the upgrade the settings can be restored on the same page.
+**Warning: The above backup does not contain additional installed packages!** If you installed software packages with `opkg` or through LuCi, you need perform a special backup:
+
+1. Login to the router via SSH.
+2. Execute
+```shell
+sysupgrade -k -b <backup_file>.tar.gz
+```
+3. Transfer the created file to your PC, e.g. with `scp`.
+
+#### Restore settings
+If you made the backup with the LuCi-Webinterface, you can restore your settings on the same page.
+
+**Warning: This means, that on the first boot the device uses its default configuration!** If you don't want this behaviour or if you also backed up your installed packages, please use this alternative restoring method:
+
+You could also integrate your backed up configuration into an image before flashing it to the device. To do this call the `restore_config.sh` script:
+```shell
+# this scripts asks for admin rights during execution!
+restore_config.sh -i <image_file> -c <conifg_file>
+```
+
+`<image_file>` This is the image file to which the configuration should be applied. Could be either the SD card or EMMC image.
+
+`<conifg_file>` This the *.tar.gz archive that was created either via LuCi or with the `sysupgrade` command above.
+
+After that your settings have been integrated into the image file and can be flashed to either SD card or EMMC.
 
 
-##### EMMC
+#### EMMC
 The upgrade of the EMMC device can be done while the system is runing from that device. Usually only the `BPI-R2_EMMC.img` image needs to be (re-)flashed since this contains the filesystem and kernel.
