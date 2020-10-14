@@ -132,9 +132,9 @@ jobs:
                   sd_image_name=$(basename "$SD_IMAGE_FILE")
                   emmc_image_name=$(basename "$EMMC_IMAGE_FILE")
                   emmc_boot0_name=$(basename "$EMMC_BOOT0_FILE")
-                  echo "::set-env name=SD_IMAGE_NAME::$sd_image_name"
-                  echo "::set-env name=EMMC_IMAGE_NAME::$emmc_image_name"
-                  echo "::set-env name=EMMC_BOOT0_NAME::$emmc_boot0_name"
+                  echo "SD_IMAGE_NAME=$sd_image_name" >> $GITHUB_ENV
+                  echo "EMMC_IMAGE_NAME=$emmc_image_name" >> $GITHUB_ENV
+                  echo "EMMC_BOOT0_NAME=$emmc_boot0_name" >> $GITHUB_ENV
 
             - name: Create GH Release
               id: create_release
