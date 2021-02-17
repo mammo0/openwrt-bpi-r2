@@ -64,17 +64,17 @@ For customizations you can specify the following build arguments:
 - `PGID`: The group ID that belongs to that user.
 
 #### 2) Run the Docker image to build the OpenWRT images
-To start the automated build process run (the `--privileged` argument is required for the image creation):
+To start the automated build process run:
 ```shell
-docker run --privileged -v `pwd`:/out bpi_r2-openwrt [uboot|openwrt]
+docker run [--privileged] -v `pwd`:/out bpi_r2-openwrt [uboot|openwrt]
 ```
-By default if no arguments were specified, the resulting SD card and EMMC images should be available in your current working directory. Otherwise check the `-v` argument. On container side the path should be equal to the `VOLUME_DIR` path that is defined in the Dockerfile.
+By default if no arguments were specified, the `--privileged` parameter is **required** for the image creation process. The resulting SD card and EMMC images should be available in your current working directory. Otherwise check the `-v` parameter. On container side the path should be equal to the `VOLUME_DIR` path that is defined in the Dockerfile.
 
 The optional arguments:
 - **uboot**: Only build the U-Boot binary. After the build you should find the `u-boot.bin` in your current working directory.
 - **openwrt**: Only build OpenWRT. Afterwards you should find the `openwrt-kernel.bin` and the `openwrt-rootfs.tar.gz` in your current working directory.
 
-*If you were building `uboot` and `openwrt` with the help of Docker, you can copy the resulting files to `artifacts` directory. After that the `3_build_images.sh` script can be called directly on your host PC.*
+*If you use the `uboot` or `openwrt` argument, the `--privileged` parameter is not necessary. Afterwards you can copy the resulting U-Boot or OpenWRT files from the current working directory to the `artifacts` directory. Then you can call the `3_build_images.sh` script directly on your host PC to build the images (check the dependencies above for this).*
 
 
 
