@@ -46,7 +46,7 @@ jobs:
               run: docker load -i $DOCKER_IMAGE_FILE
 
             - name: Build
-              run: docker run --privileged -v "$ARTIFACTS_DIR":/out $DOCKER_IMAGE_TAG uboot
+              run: docker run -v "$ARTIFACTS_DIR":/out $DOCKER_IMAGE_TAG uboot
 
             - name: Save binary
               uses: actions/upload-artifact@v2
@@ -75,7 +75,7 @@ jobs:
               run: docker load -i $DOCKER_IMAGE_FILE
 
             - name: Build
-              run: docker run --privileged -v "$ARTIFACTS_DIR":/out $DOCKER_IMAGE_TAG openwrt
+              run: docker run -v "$ARTIFACTS_DIR":/out $DOCKER_IMAGE_TAG openwrt
 
             - name: Save kernel
               uses: actions/upload-artifact@v2
