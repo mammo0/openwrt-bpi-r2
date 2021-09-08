@@ -1,5 +1,22 @@
 # OpenWRT for Banana Pi R2
 
+**Important: On September 4, 2021 OpenWRT 21.02 was released.** This release has a much better built-in support for the Banana Pi R2. You can download a ready to use image now from the official OpenWRT site: https://firmware-selector.openwrt.org/ (just search for Banana Pi R2)
+
+Please have a look at the official [Wiki](https://openwrt.org/docs/guide-user/installation/installation_methods/sd_card) for flashing the image to a SD card.
+
+**This means this project is now discontinued**!
+
+You can still find my images (up to version 19.07.8) on the [releases page](https://github.com/mammo0/openwrt-bpi-r2/releases).
+
+</br>
+
+_Finally, I want to thank everybody who used my images :)_
+
+</br>
+
+---
+
+
 This repository contains a collection of scripts for building a
  - SD card and
  - EMMC
